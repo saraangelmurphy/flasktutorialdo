@@ -6,6 +6,9 @@ from werkzeug.exceptions import abort
 # Loads environment variables to pass in secrets
 from dotenv import load_dotenv
 import os
+# Gets us some basic security headers
+import secure
+secure_headers = secure.Secure()
 load_dotenv()
 # Opens a connection to the database
 # Sets the row_factory attribute to sqllite3.Row to get name based access to columns
@@ -33,7 +36,13 @@ def get_post(post_id):
     if post is None:
         abort(404)
     return post
-    
+
+# Sets basic security headers
+@app.after_request
+def set_secure_headers(response):
+    secure_headers.framework.flask(response)
+    return response
+
 # We open a connection to the database
 # Execute a SQL Query to select all entries from the posts table
 # We use the fetchall() function fetch all the rows of the query result
