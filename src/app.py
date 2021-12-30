@@ -79,5 +79,36 @@ def create():
             return redirect(url_for('index'))
     return render_template('create.html')
 
+@app.route('/<int:id>/edit', methods=('POST', 'GET'))
+def edit(id):
+    post = get_post(id)
+    
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        
+        if not title:
+            flash('Title Required')
+        if not content:
+            flash('Content is required')
+        else:
+            conn = get_db_connection()
+            conn.execute('UPDATE posts SET title = ?, content = ?'
+                         ' WHERE id = ?', (title, content, id))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+    # Pass in post variable which has the value of the get_post() function
+    return render_template('edit.html', post=post)
+
+@app.route('/<int:id>/delete', methods=('POST',))
+def delete(id):
+    post = get_post(id)
+    conn = get_db_connection()
+    conn.execute('DELETE FROM posts WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('"{}" was successfully deleted!'.format(post['Title']))
+    return redirect(url_for('index'))
 if __name__ == "__main__":
     app.run()
