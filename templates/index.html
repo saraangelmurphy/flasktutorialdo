@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Welcome to FlaskBlog {% endblock %}</h1>
+    <!-- Jinja2 for loop. We iterate over each item in the posts list passed by the index() function in the line return render_template('index.html, posts=posts')-->
+    <!-- We display each post title in a <h2> heading inside the <a> tag -->
+    {% for post in posts %}
+        <!-- We pass 'post' to the url_for function as the first argument. This is the name of the post() view function. -->
+        <!-- Because post() accepts a post_id argument, we give it the value post['id']. url_for will return the proper URL for each post based on ID. --> 
+        <a href="{{ url_for('post', post_id=post['id']) }}">
+            <!-- We display the title -->
+            <h2>{{ post['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ post['created'] }}</span>
+        <hr>
+    {% endfor %}
+{% endblock %}
