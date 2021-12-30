@@ -59,6 +59,24 @@ def post(post_id):
 # Creates a new route that accepts GET and POST requests. GET is by default, POST is not.
 @app.route('/create', methods=('GET', 'POST'))
 def create():
+    # only execute if we get a post request
+    if request.method == 'POST':
+        # Extract titile and content from request.form object
+        title = request.form['title']
+        content = request.form['content']
+        
+        # This is bad but apparently something called a ViewModel can help out here. For a later tutorial perhaps.
+        # We do validation here and not on the client to achieve server side validation. 
+        if not title:
+            flash('Title is Required')
+        if not content:
+            flash('Content is Required')
+        else:
+            conn = get_db_connection()
+            conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)', (title, content))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
     return render_template('create.html')
 
 if __name__ == "__main__":
