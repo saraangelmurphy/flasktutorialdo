@@ -48,7 +48,7 @@ def index():
     conn.close()
     return render_template('index.html', posts=posts)
 
-# We add a VARIABLE RULE to specify taht the part after the slash is a positive integer (marked with int) that we need to access the view function
+# We add a VARIABLE RULE to specify that the part after the slash is a positive integer (marked with int) that we need to access the view function
 # Flask recognizes this, and passes the value to the post_id keyword argument of the post() view function
 # We then use the get_post function to get the  blog post associated with the ID and store the result in the post variable, which we then pass to the post.html template
 @app.route('/<int:post_id>')
@@ -56,6 +56,10 @@ def post(post_id):
     post = get_post(post_id)
     return render_template('post.html', post=post)
 
+# Creates a new route that accepts GET and POST requests. GET is by default, POST is not.
+@app.route('/create', methods=('GET', 'POST'))
+def create():
+    return render_template('create.html')
 
 if __name__ == "__main__":
     app.run()
